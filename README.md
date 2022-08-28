@@ -41,6 +41,7 @@ Contribute: fork it and create pull request.
 - [ ] In site search engine.
 - [ ] Multithreading.
 - [ ] Make a standard: include module paths, naming conventions for variables (or functions).
+- [ ] Use a JSON file to configure the server, about(about.md) content should be included in it.
 - [x] Will add more if needed.
 
 # Contact Me
