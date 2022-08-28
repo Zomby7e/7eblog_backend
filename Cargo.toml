@@ -1,5 +1,5 @@
 [package]
-name = "7eblog_backend"
+name = "se7enblog_backend"
 version = "0.1.0"
 edition = "2021"
 

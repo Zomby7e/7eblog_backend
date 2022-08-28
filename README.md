@@ -16,7 +16,7 @@ Contribute: fork it and create pull request.
 3. Create a blank SQLite database file (command line):
 
    ```bash
-   sqlite3 blog_main.db "create table t(f int); drop table t;"
+   sqlite3 main.db "create table t(f int); drop table t;"
    ```
 
    *This is the database used to store articles.*
@@ -42,6 +42,7 @@ Contribute: fork it and create pull request.
 - [ ] Multithreading.
 - [ ] Make a standard: include module paths, naming conventions for variables (or functions).
 - [ ] Use a JSON file to configure the server, about(about.md) content should be included in it.
+- [ ] the package name cannot start with a digit, maybe I need to think about rename this project.
 - [x] Will add more if needed.
 
 # Contact Me

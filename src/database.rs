@@ -21,7 +21,7 @@ struct Hashtag{
 // Initialize the local sqlite database.
 pub fn database_init(){
     // Open A connection to local sqlite database.
-    let connection = Connection::open("blog_main.db").unwrap();
+    let connection = Connection::open("main.db").unwrap();
 
     // Create "hashtags" database (If not exists).
     connection.execute(
@@ -71,7 +71,7 @@ pub fn database_init(){
 
 // get rows from "read" table.
 pub fn database_get_read(query_object: QueryObject) -> Result<String, rusqlite::Error> {
-    let connection = Connection::open("blog_main.db")?;
+    let connection = Connection::open("main.db")?;
     let sql_string: String = String::from(format!("SELECT * FROM read WHERE id = \"{}\";", query_object.id));
     let mut stmt = connection.prepare(&sql_string)?;
 
@@ -104,7 +104,7 @@ pub fn database_get_read(query_object: QueryObject) -> Result<String, rusqlite::
 
 // 查某文章的所有的标签(待重构)
 fn database_get_read_hashtag (id: String) -> Result<Vec<Hashtag>, rusqlite::Error>{
-    let connection = Connection::open("blog_main.db")?;
+    let connection = Connection::open("main.db")?;
     let sql_string: String = String::from(format!(
         "SELECT r.hashtag_id AS id, h.name, h.comment
         FROM read_hashtag AS r JOIN hashtag AS h ON hashtag_id = h.id
@@ -136,7 +136,7 @@ fn database_get_read_hashtag (id: String) -> Result<Vec<Hashtag>, rusqlite::Erro
 
 // get rows from "read" table.
 pub fn database_get_read_pagination(query_object: ReadPaginationQueryObject) -> Result<String, rusqlite::Error> {
-    let connection = Connection::open("blog_main.db")?;
+    let connection = Connection::open("main.db")?;
     let sql_string: String = String::from(format!("SELECT * FROM read LIMIT {} OFFSET {};", query_object.page_size, query_object.current_page));
     let mut stmt = connection.prepare(&sql_string)?;
 
