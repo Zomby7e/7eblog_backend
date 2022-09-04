@@ -31,7 +31,7 @@ async fn main() -> std::io::Result<()> {
             // enable logger
             .wrap(middleware::Logger::default())
             .wrap(cors_config())
-            .service(web::resource("/").to(index))
+            .service(web::resource("/ping").to(ping))
             .service(web::resource("/read").to(read))
             .service(web::resource("/about").to(about))
             .service(web::resource("/pagination/read").to(pagination_read))
@@ -51,10 +51,9 @@ fn cors_config() -> Cors {
         .max_age(3600)
 }
 
-// Path: /; (Deprecated)
-async fn index(req: HttpRequest) -> &'static str {
-    println!("REQ: {req:?}");
-    "# Hello, markdown from server!\n Hello world."
+// Path: /ping
+async fn ping() -> &'static str {
+    "Ok"
 }
 
 // Path: /read; Query: id: String
@@ -102,7 +101,6 @@ async fn about(req: HttpRequest) -> HttpResponse {
 // Path: /pagination/read; Query: current_page: String, page_size: String
 async fn pagination_read(req: HttpRequest) -> HttpResponse {
     let query_object: ReadPaginationQueryObject = serde_qs::from_str(req.query_string()).unwrap();
-    println!("Query String is: {}", req.query_string());
     // 查询数据库结果，返回。
     match database::database_get_read_pagination(query_object) {
         Ok(result) => {

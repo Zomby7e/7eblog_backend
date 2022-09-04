@@ -105,10 +105,10 @@ pub fn database_get_read(query_object: QueryObject) -> Result<String, rusqlite::
 // 查某文章的所有的标签(待重构)
 fn database_get_read_hashtag (id: String) -> Result<Vec<Hashtag>, rusqlite::Error>{
     let connection = Connection::open("main.db")?;
-    let sql_string: String = String::from(format!(
+    let sql_string: String = format!(
         "SELECT r.hashtag_id AS id, h.name, h.comment
         FROM read_hashtag AS r JOIN hashtag AS h ON hashtag_id = h.id
-        WHERE read_id = \"{}\";", &id));
+        WHERE read_id = \"{}\";", &id);
     let mut stmt = connection.prepare(&sql_string)?;
     let hashtags = stmt
     .query_map([], |row|
@@ -164,6 +164,5 @@ pub fn database_get_read_pagination(query_object: ReadPaginationQueryObject) -> 
         }
     }
     let result_str = serde_json::to_string(&read_vec).unwrap();
-    println!("---result_str---{}", &result_str);
     Ok(result_str)
 }
