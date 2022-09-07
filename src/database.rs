@@ -1,7 +1,11 @@
 use rusqlite::{Connection, Result};
-use crate::{QueryObject, ReadPaginationQueryObject};
 use serde_derive::{Deserialize, Serialize};
 
+use crate::bean::{ReadIDQuery, ReadPaginationQuery};
+
+// TODO: some things here are nullable, need to deal with them.
+// TODO: Timestamps should included publish timestamp and modification timestamp.
+// TODO: Move them to bean module.
 #[derive(Serialize, Deserialize)]
 struct Read {
     id: String,
@@ -19,6 +23,7 @@ struct Hashtag{
 }
 
 // Initialize the local sqlite database.
+// TODO: This comment will not be removed until I finished adding and modifying the table structure
 pub fn database_init(){
     // Open A connection to local sqlite database.
     let connection = Connection::open("main.db").unwrap();
@@ -70,9 +75,9 @@ pub fn database_init(){
 }
 
 // get rows from "read" table.
-pub fn database_get_read(query_object: QueryObject) -> Result<String, rusqlite::Error> {
+pub fn database_get_read(query_object: ReadIDQuery) -> Result<String, rusqlite::Error> {
     let connection = Connection::open("main.db")?;
-    let sql_string: String = String::from(format!("SELECT * FROM read WHERE id = \"{}\";", query_object.id));
+    let sql_string: String = String::from(format!("SELECT * FROM read WHERE id = \"{}\";", query_object.get_id()));
     let mut stmt = connection.prepare(&sql_string)?;
 
     let reads = stmt
@@ -102,7 +107,7 @@ pub fn database_get_read(query_object: QueryObject) -> Result<String, rusqlite::
     Ok(read_str)
 }
 
-// 查某文章的所有的标签(待重构)
+// get all hashtags which applied to a "read"
 fn database_get_read_hashtag (id: String) -> Result<Vec<Hashtag>, rusqlite::Error>{
     let connection = Connection::open("main.db")?;
     let sql_string: String = format!(
@@ -124,7 +129,7 @@ fn database_get_read_hashtag (id: String) -> Result<Vec<Hashtag>, rusqlite::Erro
     for hashtag in hashtags? {
         match hashtag {
             Ok(hashtag_single) => {
-                hashtag_vec.push(hashtag_single)
+                hashtag_vec.push(hashtag_single);
             },
             Err(e) => {
                 return Err(e);
@@ -135,9 +140,10 @@ fn database_get_read_hashtag (id: String) -> Result<Vec<Hashtag>, rusqlite::Erro
 }
 
 // get rows from "read" table.
-pub fn database_get_read_pagination(query_object: ReadPaginationQueryObject) -> Result<String, rusqlite::Error> {
+// TODO: Pagination query should returns summary not entire content.
+pub fn database_get_read_pagination(query_object: ReadPaginationQuery) -> Result<String, rusqlite::Error> {
     let connection = Connection::open("main.db")?;
-    let sql_string: String = String::from(format!("SELECT * FROM read LIMIT {} OFFSET {};", query_object.page_size, query_object.current_page));
+    let sql_string: String = String::from(format!("SELECT * FROM read LIMIT {} OFFSET {};", query_object.get_page_size(), query_object.get_current_page()));
     let mut stmt = connection.prepare(&sql_string)?;
 
     let reads = stmt
@@ -156,7 +162,7 @@ pub fn database_get_read_pagination(query_object: ReadPaginationQueryObject) -> 
     for read in reads? {
         match read {
             Ok(read_single) => {
-                read_vec.push(read_single)
+                read_vec.push(read_single);
             },
             Err(e) => {
                 return Err(e);
