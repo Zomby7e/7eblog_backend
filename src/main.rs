@@ -22,7 +22,7 @@ async fn main() -> std::io::Result<()> {
             .service(handler::read)
             .service(handler::read_pagination)
     })
-    .bind(("127.0.0.1", 8090))?
+    .bind(("0.0.0.0", 8090))?
     .run()
     .await
 }
